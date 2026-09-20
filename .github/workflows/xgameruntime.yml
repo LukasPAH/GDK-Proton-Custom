@@ -1,0 +1,28 @@
+name: Get xgameruntime
+on: workflow_dispatch
+
+jobs:
+    collect:
+        runs-on: windows-latest
+        steps:
+            - name: Install GDK
+              shell: pwsh
+              continue-on-error: true
+              run: |
+                  winget install Microsoft.Gaming.GDK --silent --accept-package-agreements --accept-source-agreements
+
+            - name: Find xgameruntime.
+              shell: pwsh
+              run: |
+                  New-Item -ItemType Directory -Path out | Out-Null
+                  Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -Filter 'xgameruntime*' -File -ErrorAction SilentlyContinue |
+                    ForEach-Object {
+                      Write-Host $_.FullName
+                      Copy-Item $_.FullName -Destination ("out\" + ($_.FullName -replace '[:\\]', '_'))
+                    }
+
+            - uses: actions/upload-artifact@v4
+              with:
+                  name: xgameruntime
+                  path: out/
+                  if-no-files-found: warn
