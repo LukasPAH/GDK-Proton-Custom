@@ -1,0 +1,3 @@
+[submodule "WineGDK"]
+	path = WineGDK
+	url = https://github.com/LukasPAH/WineGDK.git

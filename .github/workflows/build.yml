@@ -1,4 +1,4 @@
-name: Get xgameruntime
+name: Get xgameruntime and build.
 on: workflow_dispatch
 
 jobs:
@@ -15,7 +15,7 @@ jobs:
               shell: pwsh
               run: |
                   New-Item -ItemType Directory -Path out | Out-Null
-                  Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -Filter 'xgameruntime*' -File -ErrorAction SilentlyContinue |
+                  Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -Filter 'xgameruntime*' -File |
                     ForEach-Object {
                       Write-Host $_.FullName
                       Copy-Item $_.FullName -Destination ("out\" + "xgameruntime.dll.threading")
@@ -35,3 +35,15 @@ jobs:
               uses: actions/download-artifact@v4
               with:
                   name: xgameruntime
+
+            - name: Move xgameruntime to build directory
+              run: |
+                  mkdir -p build/extra
+                  mv xgameruntime/xgameruntime.dll.threading build/extra/xgameruntime.dll.threading
+                  cd build/extra
+                  ls
+                  cd ../..
+
+            - name: Run build script
+              run: |
+                  ./build.sh
