@@ -1,6 +1,8 @@
 #!/bin/bash
 
-PROTON_RELEASE="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-Proton11-7/GE-Proton11-7-x86_64.tar.gz"
+export PROTON_VERSION="Proton11-7"
+
+PROTON_RELEASE="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-${PROTON_VERSION}/GE-${PROTON_VERSION}-x86_64.tar.gz"
 
 # Download required mingw64 dlls
 brotli=('brotli-1.2.0-1' 'libbrotlicommon libbrotlidec')
@@ -54,14 +56,15 @@ cd ..
 
 # Download and extract Proton GE.
 curl -L $PROTON_RELEASE -o proton.tar.gz
-mkdir -p proton
-tar -xf proton.tar.gz -C proton --strip-components=1
+mkdir -p "GDK-${PROTON_VERSION}"
+tar -xf proton.tar.gz -C "GDK-${PROTON_VERSION}" --strip-components=1
+rm -f proton.tar.gz
 
 # Patch Proton python script to include extra dlls.
 ./patch_proton.sh
 
 # Copy wine extra dlls to proton directory.
-cp -r build/extra/* proton/files/lib/wine/x86_64-windows
+cp -r build/extra/* "GDK-${PROTON_VERSION}/files/lib/wine/x86_64-windows"
 
 # Copy select compiled WineGDK dlls to proton directory.
 declare -A dlls=(
@@ -76,5 +79,10 @@ declare -A dlls=(
 for src in "${!dlls[@]}"; do
     dst=${dlls[$src]}
     cp -f "build/dlls/${src}/x86_64-windows/${dst}.dll" \
-       "proton/files/lib/wine/x86_64-windows/${dst}.dll"
+       "GDK-${PROTON_VERSION}/files/lib/wine/x86_64-windows/${dst}.dll"
 done
+
+# Repackage Proton GE with the patched files.
+mkdir -p proton
+mv "GDK-${PROTON_VERSION}" "proton/GDK-${PROTON_VERSION}"
+tar -czf GDK-${PROTON_VERSION}-x86_64.tar.gz -C "proton" .

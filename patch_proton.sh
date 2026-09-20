@@ -1,6 +1,6 @@
 # Patch Proton GE to move extra dlls to the prefix.
 
-FILE=./proton/proton
+FILE="./GDK-${PROTON_VERSION}/proton"
 
 # Skip if already patched
 if grep -q 'libasprintf-0.dll' "$FILE"; then
