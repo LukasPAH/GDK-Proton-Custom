@@ -35,7 +35,8 @@ BLOCK=$(cat <<'EOF'
                     ("xgameruntime.dll.threading", "xgameruntime.dll.threading"),
                     ("windows.ui.core.textinput.dll", "windows.ui.core.textinput.dll"),
                     ("windows.devices.enumeration.dll", "windows.devices.enumeration.dll"),
-                    ("Microsoft.WindowsAppRuntime.Bootstrap.dll", "Microsoft.WindowsAppRuntime.Bootstrap.dll")
+                    ("Microsoft.WindowsAppRuntime.Bootstrap.dll", "Microsoft.WindowsAppRuntime.Bootstrap.dll"),
+                    ("XCurl.dll", "XCurl.dll")
                 ]
 
                 for (src,tgt) in dll_files:

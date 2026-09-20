@@ -1,4 +1,4 @@
-name: Get xgameruntime and build.
+name: Download xgameruntime, build WineGDK, and release patched Proton.
 on: workflow_dispatch
 
 jobs:
@@ -38,12 +38,8 @@ jobs:
 
             - name: Move xgameruntime to build directory
               run: |
-                  ls
                   mkdir -p build/extra
                   mv xgameruntime.dll.threading build/extra/xgameruntime.dll.threading
-                  cd build/extra
-                  ls
-                  cd ../..
 
             - name: Run build script
               run: |

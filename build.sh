@@ -33,7 +33,7 @@ for package in ${packages[@]}; do
         name="c-ares"
     fi
     echo "Downloading ${package[0]}..."
-    #curl "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-${package[0]}-any.pkg.tar.zst" -o - | tar --zstd -x $(echo ${package[1]} | xargs printf -- 'mingw64/bin/%s.dll ')--transform "s/mingw64\/bin\///"
+    curl "https://repo.msys2.org/mingw/mingw64/mingw-w64-x86_64-${package[0]}-any.pkg.tar.zst" -o - | tar --zstd -x $(echo ${package[1]} | xargs printf -- 'mingw64/bin/%s.dll ')--transform "s/mingw64\/bin\///"
 done
 
 # Copy libngtcp2_crypto_ossl-0.dll to libngtcp2_crypto_ossl.dll
@@ -53,8 +53,28 @@ make -j$(nproc)
 cd ..
 
 # Download and extract Proton GE.
-#curl -L $PROTON_RELEASE -o proton.tar.gz
-#mkdir -p proton
-#tar -xf proton.tar.gz -C proton --strip-components=1
+curl -L $PROTON_RELEASE -o proton.tar.gz
+mkdir -p proton
+tar -xf proton.tar.gz -C proton --strip-components=1
 
+# Patch Proton python script to include extra dlls.
 ./patch_proton.sh
+
+# Copy wine extra dlls to proton directory.
+cp -r build/extra/* proton/files/lib/wine/x86_64-windows
+
+# Copy select compiled WineGDK dlls to proton directory.
+declare -A dlls=(
+    [xgameruntime]=xgameruntime
+    [windows.ui.core.textinput]=windows.ui.core.textinput
+    [windows.devices.enumeration]=windows.devices.enumeration
+    [windows.appruntime.bootstrap]=Microsoft.WindowsAppRuntime.Bootstrap
+    [wintypes]=wintypes
+    [twinapi.appcore]=twinapi.appcore
+)
+
+for src in "${!dlls[@]}"; do
+    dst=${dlls[$src]}
+    cp -f "build/dlls/${src}/x86_64-windows/${dst}.dll" \
+       "proton/files/lib/wine/x86_64-windows/${dst}.dll"
+done
