@@ -38,6 +38,7 @@ jobs:
 
             - name: Move xgameruntime to build directory
               run: |
+                  ls
                   mkdir -p build/extra
                   mv xgameruntime/xgameruntime.dll.threading build/extra/xgameruntime.dll.threading
                   cd build/extra
