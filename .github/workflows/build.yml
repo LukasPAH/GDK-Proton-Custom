@@ -74,11 +74,8 @@ jobs:
             - name: Upload release artifacts
               uses: actions/upload-artifact@v4
               with:
-                  name: GDK-Proton
                   path: GDK-Proton*.tar.gz
 
-            - uses: ncipollo/release-action@v1
+            - uses: softprops/action-gh-release@v1
               with:
-                  artifacts: "GDK-Proton*.tar.gz"
-              env:
-                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  files: GDK-Proton*.tar.gz
