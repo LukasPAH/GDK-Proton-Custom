@@ -30,6 +30,8 @@ jobs:
         needs: xgameruntime
         steps:
             - uses: actions/checkout@v4
+              with:
+                  submodules: recursive
 
             - name: Download xgameruntime
               uses: actions/download-artifact@v4
