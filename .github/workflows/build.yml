@@ -33,6 +33,25 @@ jobs:
               with:
                   submodules: recursive
 
+            - name: Install Wine build dependencies
+              run: |
+                  sudo apt-get update
+                  sudo apt-get install -y --no-install-recommends \
+                    build-essential flex bison pkg-config \
+                    gcc-multilib gcc-mingw-w64 \
+                    libasound2-dev bluez libpulse-dev libdbus-1-dev \
+                    libfontconfig-dev libfreetype-dev libgnutls28-dev \
+                    libgl-dev libunwind-dev libx11-dev libxcomposite-dev \
+                    libxcursor-dev libxfixes-dev libxi-dev libxrandr-dev \
+                    libxrender-dev libxext-dev \
+                    libwayland-bin libwayland-dev libegl-dev \
+                    libxkbcommon-dev libxkbregistry-dev \
+                    libgstreamer1.0-dev libgstreamer-plugins-base1.0-dev \
+                    libsdl2-dev libudev-dev libvulkan-dev \
+                    libcapi20-dev libcups2-dev libgphoto2-dev libsane-dev \
+                    libkrb5-dev samba-dev ocl-icd-opencl-dev libpcap-dev \
+                    libusb-1.0-0-dev libv4l-dev
+
             - name: Download xgameruntime
               uses: actions/download-artifact@v4
               with:
