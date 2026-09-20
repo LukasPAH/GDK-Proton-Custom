@@ -2,7 +2,7 @@ name: Get xgameruntime
 on: workflow_dispatch
 
 jobs:
-    collect:
+    xgameruntime:
         runs-on: windows-latest
         steps:
             - name: Install GDK
@@ -18,11 +18,20 @@ jobs:
                   Get-ChildItem "C:\Program Files\WindowsApps" -Recurse -Filter 'xgameruntime*' -File -ErrorAction SilentlyContinue |
                     ForEach-Object {
                       Write-Host $_.FullName
-                      Copy-Item $_.FullName -Destination ("out\" + ($_.FullName -replace '[:\\]', '_'))
+                      Copy-Item $_.FullName -Destination ("out\" + "xgameruntime.dll.threading")
                     }
 
             - uses: actions/upload-artifact@v4
               with:
                   name: xgameruntime
                   path: out/
-                  if-no-files-found: warn
+    build:
+        runs-on: ubuntu-latest
+        needs: xgameruntime
+        steps:
+            - uses: actions/checkout@v4
+
+            - name: Download xgameruntime
+              uses: actions/download-artifact@v4
+              with:
+                  name: xgameruntime
