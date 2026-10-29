@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PROTON_VERSION="Proton11-7"
+export PROTON_VERSION="Proton11-11"
 
 PROTON_RELEASE="https://github.com/GloriousEggroll/proton-ge-custom/releases/download/GE-${PROTON_VERSION}/GE-${PROTON_VERSION}-x86_64.tar.gz"
 
@@ -71,6 +71,7 @@ declare -A dlls=(
     [xgameruntime]=xgameruntime
     [windows.ui.core.textinput]=windows.ui.core.textinput
     [windows.devices.enumeration]=windows.devices.enumeration
+    [windows.applicationmodel]=windows.applicationmodel
     [windows.appruntime.bootstrap]=Microsoft.WindowsAppRuntime.Bootstrap
     [wintypes]=wintypes
     [twinapi.appcore]=twinapi.appcore
@@ -81,6 +82,10 @@ for src in "${!dlls[@]}"; do
     cp -f "build/dlls/${src}/x86_64-windows/${dst}.dll" \
        "GDK-${PROTON_VERSION}/files/lib/wine/x86_64-windows/${dst}.dll"
 done
+
+# Update Proton wine.
+touch "GDK-${PROTON_VERSION}/files/share/wine/wine.inf"
+rm -rf "GDK-${PROTON_VERSION}/files/share/default_pfx"
 
 # Repackage Proton GE with the patched files.
 mkdir -p proton
